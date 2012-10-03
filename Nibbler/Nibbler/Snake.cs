@@ -86,13 +86,11 @@ namespace Nibbler
 
         public void Update(GameTime gameTime, GraphicsDeviceManager graphics)
         {
-            direction = UpdateDirection();
-
-            elapsedGameTime += gameTime.ElapsedGameTime.TotalMilliseconds;
-
             // Updates movement only every frameSpeed'th of a second
+            elapsedGameTime += gameTime.ElapsedGameTime.TotalMilliseconds;
             if (elapsedGameTime >= frameSpeed)
             {
+                direction = UpdateDirection();
                 UpdateMovement(graphics);
                 elapsedGameTime -= frameSpeed;
             }
@@ -112,7 +110,6 @@ namespace Nibbler
                 direction = Direction.Right;
 
             return direction;
-
         }
 
         private void UpdateMovement(GraphicsDeviceManager graphics)
@@ -137,19 +134,6 @@ namespace Nibbler
                     positions.RemoveRange(START_LENGTH, positions.Count - START_LENGTH);
                     score = 0;
                 }
-
-            //if (snakeAlive == false)
-            //{
-            //    body = new List<Texture2D>();
-            //    positions = new List<Vector2>();
-            //    positions.Add(new Vector2(START_POSITION_X, START_POSITION_Y));
-
-            //    for (int i = positions.Count; i > START_LENGTH; i--)
-            //    {
-            //        positions.Add(new Vector2(START_POSITION_X, START_POSITION_Y - body[0].Height));
-            //        body.Add(head);   
-            //    }
-            //}
 
             // Update position of snake
             for (int i = positions.Count - 1; i > 0; i--)

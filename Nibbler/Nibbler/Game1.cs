@@ -22,6 +22,10 @@ namespace Nibbler
         Snake player1;
         Apple apple;
 
+        private bool paused = false;
+        private bool pauseKeyDown = false;
+        private bool deathPause = false;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -85,13 +89,24 @@ namespace Nibbler
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // Allows the game to exit
             KeyboardState keyState = Keyboard.GetState();
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-                keyState.IsKeyDown(Keys.Escape))
+
+            // Allows the game to exit
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
+            // Allows the game to pause
+            checkPauseKey(keyState);
+            if (!paused)
+                Simulate(gameTime);
+
             // TODO: Add your update logic here
+            
+            base.Update(gameTime);
+        }
+
+        protected void Simulate(GameTime gameTime)
+        {
             player1.Update(gameTime, graphics);
             if (player1.BoundingBox[0].Intersects(apple.BoundingBox))
             {
@@ -99,8 +114,34 @@ namespace Nibbler
                 NewApple();
                 player1.score += 10;
             }
-            
-            base.Update(gameTime);
+        }
+
+        /// <summary>
+        /// Code for pausing game.
+        /// </summary>
+        /// <param name="userPause">True if user hits pause key</param>
+        private void BeginPause(bool userPause)
+        {
+            paused = true;
+            deathPause = !userPause;
+        }
+
+        private void EndPause()
+        {
+            paused = false;
+        }
+
+        private void checkPauseKey(KeyboardState keyState)
+        {
+            bool pauseKeyDownThisFrame = keyState.IsKeyDown(Keys.Escape);
+            if (!pauseKeyDown && pauseKeyDownThisFrame)
+            {
+                if (!paused)
+                    BeginPause(true);
+                else
+                    EndPause();
+            }
+            pauseKeyDown = pauseKeyDownThisFrame;
         }
 
         /// <summary>
@@ -113,8 +154,8 @@ namespace Nibbler
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            player1.Draw(spriteBatch);
             apple.Draw(spriteBatch);
+            player1.Draw(spriteBatch);
             spriteBatch.End();
 
 
