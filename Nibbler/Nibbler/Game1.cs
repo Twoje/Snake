@@ -16,6 +16,8 @@ namespace Nibbler
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
+        
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
@@ -28,6 +30,7 @@ namespace Nibbler
 
         public Game1()
         {
+            this.Window.Title = "Snake";
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
